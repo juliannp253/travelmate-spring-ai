@@ -1,0 +1,426 @@
+{
+  "info": {
+    "_postman_id": "0f9cdd9d-travelmate-base",
+    "name": "TravelMate API Base - Sin IA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar destinos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar destino por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar destinos por país",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos/pais/Argentina",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos",
+            "pais",
+            "Argentina"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar destinos de playa",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos/tipo/PLAYA",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos",
+            "tipo",
+            "PLAYA"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar destinos tranquilos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos/tranquilos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos",
+            "tranquilos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar destinos familiares",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos/familiares",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos",
+            "familiares"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar destinos para parejas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/destinos/parejas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos",
+            "parejas"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Crear destino",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Maragogi\",\n  \"pais\": \"Brasil\",\n  \"ciudad\": \"Maragogi\",\n  \"tipo\": \"PLAYA\",\n  \"descripcion\": \"Playas tranquilas, piscinas naturales y ambiente relajado.\",\n  \"temperaturaPromedio\": 27,\n  \"aptoFamilias\": true,\n  \"aptoParejas\": true,\n  \"tranquilo\": true,\n  \"mejorEpoca\": \"Septiembre a marzo\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/destinos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "destinos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar hoteles",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/hoteles",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "hoteles"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hoteles por destino",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/hoteles/destino/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "hoteles",
+            "destino",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hoteles de 5 estrellas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/hoteles/estrellas/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "hoteles",
+            "estrellas",
+            "5"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar actividades",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/actividades",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "actividades"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Actividades por destino",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/actividades/destino/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "actividades",
+            "destino",
+            "2"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Actividades de aventura",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/actividades/tipo/AVENTURA",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "actividades",
+            "tipo",
+            "AVENTURA"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Listar paquetes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/paquetes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "paquetes"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar paquete por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/paquetes/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "paquetes",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Paquetes por destino",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/paquetes/destino/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "paquetes",
+            "destino",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Paquetes hasta 1500",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/paquetes/precio-maximo?valor=1500",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "paquetes",
+            "precio-maximo?valor=1500"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Paquetes entre 5 y 7 días",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/paquetes/duracion?minimo=5&maximo=7",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "paquetes",
+            "duracion?minimo=5&maximo=7"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Paquetes con avión",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/paquetes/transporte/AVION",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "paquetes",
+            "transporte",
+            "AVION"
+          ]
+        }
+      }
+    }
+  ]
+}
