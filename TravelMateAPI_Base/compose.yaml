@@ -1,0 +1,45 @@
+name: travelmate
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: travelmate
+      MYSQL_USER: ${MYSQL_USER:?Define MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Define MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Define MYSQL_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'MYSQL_PWD="$${MYSQL_PASSWORD}" mysql --protocol=TCP -h 127.0.0.1 -u "$${MYSQL_USER}" travelmate -e "SELECT 1"'
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  pgvector:
+    image: pgvector/pgvector:0.8.6-pg17
+    environment:
+      POSTGRES_DB: travelmate_ai
+      POSTGRES_USER: ${PGVECTOR_USER:?Define PGVECTOR_USER}
+      POSTGRES_PASSWORD: ${PGVECTOR_PASSWORD:?Define PGVECTOR_PASSWORD}
+    ports:
+      - "127.0.0.1:${PGVECTOR_PORT:-5433}:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"'
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  mysql_data:
+  pgvector_data:
