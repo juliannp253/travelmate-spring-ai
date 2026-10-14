@@ -8,6 +8,8 @@ import com.todocodeacademy.travelmate.model.Destino;
 import com.todocodeacademy.travelmate.model.Hotel;
 import com.todocodeacademy.travelmate.repository.HotelRepository;
 import org.springframework.stereotype.Service;
+import com.todocodeacademy.travelmate.ai.index.CatalogChangePublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,13 +18,16 @@ public class HotelService implements IHotelService {
 
     private final HotelRepository hotelRepository;
     private final IDestinoService destinoService;
+    private final CatalogChangePublisher catalogChanges;
 
     public HotelService(
             HotelRepository hotelRepository,
-            IDestinoService destinoService
+            IDestinoService destinoService,
+            CatalogChangePublisher catalogChanges
     ) {
         this.hotelRepository = hotelRepository;
         this.destinoService = destinoService;
+        this.catalogChanges = catalogChanges;
     }
 
     @Override
@@ -49,6 +54,7 @@ public class HotelService implements IHotelService {
     }
 
     @Override
+    @Transactional
     public Hotel crear(HotelRequest request) {
         Destino destino = destinoService.buscarPorId(request.destinoId());
 
@@ -62,10 +68,13 @@ public class HotelService implements IHotelService {
         hotel.setAptoNinos(request.aptoNinos());
         hotel.setDestino(destino);
 
-        return hotelRepository.save(hotel);
+        Hotel guardado = hotelRepository.save(hotel);
+        catalogChanges.hotel(guardado.getId());
+        return guardado;
     }
 
     @Override
+    @Transactional
     public Hotel actualizar(Long id, HotelRequest request) {
         Hotel hotel = buscarPorId(id);
         Destino destino = destinoService.buscarPorId(request.destinoId());
@@ -79,11 +88,17 @@ public class HotelService implements IHotelService {
         hotel.setAptoNinos(request.aptoNinos());
         hotel.setDestino(destino);
 
-        return hotelRepository.save(hotel);
+        Hotel guardado = hotelRepository.save(hotel);
+        catalogChanges.hotel(guardado.getId());
+        return guardado;
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
-        hotelRepository.delete(buscarPorId(id));
+        Hotel hotel = buscarPorId(id);
+
+        catalogChanges.hotel(id);
+        hotelRepository.delete(hotel);
     }
 }

@@ -7,6 +7,8 @@ import com.todocodeacademy.travelmate.model.Destino;
 import com.todocodeacademy.travelmate.model.enums.TipoDestino;
 import com.todocodeacademy.travelmate.repository.DestinoRepository;
 import org.springframework.stereotype.Service;
+import com.todocodeacademy.travelmate.ai.index.CatalogChangePublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class DestinoService implements IDestinoService {
 
     private final DestinoRepository destinoRepository;
+    private final CatalogChangePublisher catalogChanges;
 
-    public DestinoService(DestinoRepository destinoRepository) {
+    public DestinoService(DestinoRepository destinoRepository, CatalogChangePublisher catalogChanges) {
         this.destinoRepository = destinoRepository;
+        this.catalogChanges = catalogChanges;
     }
 
     @Override
@@ -58,6 +62,7 @@ public class DestinoService implements IDestinoService {
     }
 
     @Override
+    @Transactional
     public Destino crear(DestinoRequest request) {
         Destino destino = new Destino(
                 request.nombre(),
@@ -72,10 +77,13 @@ public class DestinoService implements IDestinoService {
                 request.mejorEpoca()
         );
 
-        return destinoRepository.save(destino);
+        Destino guardado = destinoRepository.save(destino);
+        catalogChanges.destino(guardado.getId());
+        return guardado;
     }
 
     @Override
+    @Transactional
     public Destino actualizar(Long id, DestinoRequest request) {
         Destino destino = buscarPorId(id);
 
@@ -90,12 +98,17 @@ public class DestinoService implements IDestinoService {
         destino.setTranquilo(request.tranquilo());
         destino.setMejorEpoca(request.mejorEpoca());
 
-        return destinoRepository.save(destino);
+        Destino guardado = destinoRepository.save(destino);
+        catalogChanges.destino(guardado.getId());
+        return guardado;
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
         Destino destino = buscarPorId(id);
+
+        catalogChanges.destino(id);
         destinoRepository.delete(destino);
     }
 }

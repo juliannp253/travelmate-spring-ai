@@ -13,6 +13,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -80,8 +82,8 @@ public class CatalogIndexService {
             postgresTransaction.executeWithoutResult(status -> {
                 jdbcTemplate.update("DELETE FROM " + table);
 
-                for (Document document : documents) {
-                    vectorStore.add(List.of(document));
+                if (!documents.isEmpty()) {
+                    vectorStore.add(documents);
                 }
             });
 
@@ -93,6 +95,10 @@ public class CatalogIndexService {
         }
     }
 
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            readOnly = true
+    )
     public synchronized boolean upsertPackage(Long paqueteId) {
         Assert.notNull(paqueteId, "El ID del paquete es obligatorio");
 
@@ -214,7 +220,6 @@ public class CatalogIndexService {
             String stage,
             RuntimeException exception) {
 
-        // No registrar prompts, claves ni cuerpos de respuesta del proveedor.
         log.error(
                 "Falló {} durante {}. Tipo de error: {}",
                 operation,

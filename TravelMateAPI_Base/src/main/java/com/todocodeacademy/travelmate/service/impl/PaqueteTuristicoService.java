@@ -10,6 +10,10 @@ import com.todocodeacademy.travelmate.model.*;
 import com.todocodeacademy.travelmate.model.enums.TipoTransporte;
 import com.todocodeacademy.travelmate.repository.PaqueteTuristicoRepository;
 import org.springframework.stereotype.Service;
+import com.todocodeacademy.travelmate.ai.index.CatalogChangePublisher;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,17 +25,20 @@ public class PaqueteTuristicoService implements IPaqueteTuristicoService {
     private final IDestinoService destinoService;
     private final IHotelService hotelService;
     private final IActividadService actividadService;
+    private final CatalogChangePublisher catalogChanges;
 
     public PaqueteTuristicoService(
             PaqueteTuristicoRepository paqueteRepository,
             IDestinoService destinoService,
             IHotelService hotelService,
-            IActividadService actividadService
+            IActividadService actividadService,
+            CatalogChangePublisher catalogChanges
     ) {
         this.paqueteRepository = paqueteRepository;
         this.destinoService = destinoService;
         this.hotelService = hotelService;
         this.actividadService = actividadService;
+        this.catalogChanges = catalogChanges;
     }
 
     @Override
@@ -73,22 +80,36 @@ public class PaqueteTuristicoService implements IPaqueteTuristicoService {
     }
 
     @Override
+    @Transactional
     public PaqueteTuristico crear(PaqueteRequest request) {
         PaqueteTuristico paquete = new PaqueteTuristico();
         copiarDatos(paquete, request);
-        return paqueteRepository.save(paquete);
+
+        PaqueteTuristico guardado = paqueteRepository.save(paquete);
+        catalogChanges.paquete(guardado.getId());
+
+        return guardado;
     }
 
     @Override
+    @Transactional
     public PaqueteTuristico actualizar(Long id, PaqueteRequest request) {
         PaqueteTuristico paquete = buscarPorId(id);
         copiarDatos(paquete, request);
-        return paqueteRepository.save(paquete);
+
+        PaqueteTuristico guardado = paqueteRepository.save(paquete);
+        catalogChanges.paquete(guardado.getId());
+
+        return guardado;
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
-        paqueteRepository.delete(buscarPorId(id));
+        PaqueteTuristico paquete = buscarPorId(id);
+
+        catalogChanges.paquete(paquete.getId());
+        paqueteRepository.delete(paquete);
     }
 
     private void copiarDatos(
@@ -99,11 +120,11 @@ public class PaqueteTuristicoService implements IPaqueteTuristicoService {
         Hotel hotel = hotelService.buscarPorId(request.hotelId());
 
         List<Actividad> actividades = request.actividadIds() == null
-                ? List.of()
+                ? new ArrayList<>()
                 : request.actividadIds()
-                        .stream()
-                        .map(actividadService::buscarPorId)
-                        .toList();
+                .stream()
+                .map(actividadService::buscarPorId)
+                .collect(Collectors.toCollection(ArrayList::new));
 
         paquete.setNombre(request.nombre());
         paquete.setCantidadDias(request.cantidadDias());

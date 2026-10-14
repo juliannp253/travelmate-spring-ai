@@ -9,6 +9,8 @@ import com.todocodeacademy.travelmate.model.Destino;
 import com.todocodeacademy.travelmate.model.enums.TipoActividad;
 import com.todocodeacademy.travelmate.repository.ActividadRepository;
 import org.springframework.stereotype.Service;
+import com.todocodeacademy.travelmate.ai.index.CatalogChangePublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,13 +19,16 @@ public class ActividadService implements IActividadService {
 
     private final ActividadRepository actividadRepository;
     private final IDestinoService destinoService;
+    private final CatalogChangePublisher catalogChanges;
 
     public ActividadService(
             ActividadRepository actividadRepository,
-            IDestinoService destinoService
+            IDestinoService destinoService,
+            CatalogChangePublisher catalogChanges
     ) {
         this.actividadRepository = actividadRepository;
         this.destinoService = destinoService;
+        this.catalogChanges = catalogChanges;
     }
 
     @Override
@@ -50,6 +55,7 @@ public class ActividadService implements IActividadService {
     }
 
     @Override
+    @Transactional
     public Actividad crear(ActividadRequest request) {
         Destino destino = destinoService.buscarPorId(request.destinoId());
 
@@ -62,10 +68,13 @@ public class ActividadService implements IActividadService {
         actividad.setAptaNinos(request.aptaNinos());
         actividad.setDestino(destino);
 
-        return actividadRepository.save(actividad);
+        Actividad guardada = actividadRepository.save(actividad);
+        catalogChanges.actividad(guardada.getId());
+        return guardada;
     }
 
     @Override
+    @Transactional
     public Actividad actualizar(Long id, ActividadRequest request) {
         Actividad actividad = buscarPorId(id);
         Destino destino = destinoService.buscarPorId(request.destinoId());
@@ -78,11 +87,17 @@ public class ActividadService implements IActividadService {
         actividad.setAptaNinos(request.aptaNinos());
         actividad.setDestino(destino);
 
-        return actividadRepository.save(actividad);
+        Actividad guardada = actividadRepository.save(actividad);
+        catalogChanges.actividad(guardada.getId());
+        return guardada;
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
-        actividadRepository.delete(buscarPorId(id));
+        Actividad actividad = buscarPorId(id);
+
+        catalogChanges.actividad(id);
+        actividadRepository.delete(actividad);
     }
 }
